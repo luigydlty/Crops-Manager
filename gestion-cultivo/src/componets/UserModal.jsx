@@ -7,7 +7,6 @@ import { useSnackbar } from "notistack";
 import { useEffect } from "react";
 import { updateUser,createUser } from "../services/api";
 
-
 const UserModal = ({ modal, setModal, modalType,updateUsers,user}) => {
   const { enqueueSnackbar } = useSnackbar();
   const formik = useFormik({

@@ -1,20 +1,30 @@
 import React from "react";
 import Sidebar from "../componets/Sidebar";
 import Header from "../componets/Header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MainContentHeader from "../componets/MainContentHeader";
 import ConfigModal from "../componets/ConfigModal";
 import ConfigTable from "../componets/ConfigTable";
 import ViewModal from "../componets/ViewModal";
+import { getConfigs } from "../services/api";
 
 const ConfigAdmin = () => {
-    const [modal, setModal] = useState(false);
-    const [modalView, setModalView] = useState(false);
-    const [modalUpdate, setModalUpdate] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [modalView, setModalView] = useState(false);
+  const [modalUpdate, setModalUpdate] = useState(false);
+  const [configs, setConfigs] = useState([]);
+  const obtenerConfiguracion = async () => {
+    const response = await getConfigs();
+    setConfigs(response);
+  };
+  /* Cargar datos en tabla con hook useEffect */
+  useEffect(() => {
+    obtenerConfiguracion();
+  }, []);
   return (
     <div className="container-fluid">
       <div className="row">
-        <Sidebar viewType={'admin'} />
+        <Sidebar viewType={"admin"} />
         <Header />
         <main
           className="col-lg-10 mt-lg-5  p-lg-0"
@@ -24,19 +34,33 @@ const ConfigAdmin = () => {
             <div className="card">
               <div className="card-body">
                 <MainContentHeader
-                 setModal={setModal}
-                 title={"Configuración de Cultivos"}
-                 subTitle={"Listado de Configuraciones"}
-                 buttonTitle={"Configurar Cultivo"}
-                 /> 
-                <ConfigTable setModal={setModal} setModalUpdate={setModalUpdate} setModalView={setModalView}/>
+                  setModal={setModal}
+                  title={"Configuración de Cultivos"}
+                  subTitle={"Listado de Configuraciones"}
+                  buttonTitle={"Configurar Cultivo"}
+                />
+                <ConfigTable
+                  setModal={setModal}
+                  setModalUpdate={setModalUpdate}
+                  configs={configs}
+                  obtenerConfiguracion={obtenerConfiguracion}
+                />
               </div>
             </div>
           </div>
         </main>
-        <ViewModal modalView={modalView} modalType={'view'} setModalView={setModalView}/>
-        <ConfigModal modal={modal} modalType={'create'} setModal={setModal}/> 
-        <ConfigModal modal={modalUpdate} modalType={'update'} setModal={setModalUpdate}/> 
+        <ViewModal
+          modalView={modalView}
+          modalType={"view"}
+          setModalView={setModalView}
+        />
+        <ConfigModal
+          modal={modal}
+          modalType={"create"}
+          setModal={setModal}
+          updateConfigs={obtenerConfiguracion}
+        />
+        {/* <ConfigModal modal={modalUpdate} modalType={'update'} setModal={setModalUpdate}/>  */}
       </div>
     </div>
   );

@@ -18,3 +18,7 @@ app.listen(app.get('port'), function() {
     console.log('Server started: http://localhost:' + app.get('port') + '/');
 }); 
 app.use('/users', require('./routes/users'));
+app.use('/crops', require('./routes/crops'));
+app.use('/propertys', require('./routes/propertys'));
+app.use('/parameters', require('./routes/parameters'));
+app.use('/configs', require('./routes/configs')); 

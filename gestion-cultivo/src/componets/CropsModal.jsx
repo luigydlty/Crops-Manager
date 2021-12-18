@@ -4,19 +4,24 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "react-bootstrap/Button";
 import { useSnackbar } from "notistack";
+import { useEffect } from "react";
+import { updateCrop,createCrop } from "../services/api";
 
-const CropsModal = ({ modal, setModal, modalType,updateUsers}) => {
+const CropsModal = ({ modal, setModal, modalType, updateCrops, crop}) => {
   const { enqueueSnackbar } = useSnackbar();
   const formik = useFormik({
     initialValues: {
       /* identificacion: "", */
-      nombreCultivo: "",
-      descripcion: "",
+      // id: crop?crop.id: "",
+      idCultivo: crop?crop.idCultivo:"",
+      nombreCultivo: crop?crop.nombreCultivo:"",
+      descripcion: crop?crop.descripcion:"",
 /*       rol: "",
       correo: "",
       contrasena: "", */
     },
     validationSchema: Yup.object({
+      idCultivo: Yup.string().required("El campo es requerido"),
       nombreCultivo: Yup.string().required("El campo es requerido"),
       descripcion: Yup.string().required("El campo es requerido"),
       /* apellidos: Yup.string().required("El campo es requerido"),
@@ -26,6 +31,7 @@ const CropsModal = ({ modal, setModal, modalType,updateUsers}) => {
     }),
     onSubmit: async (values,{resetForm}) => {
       const data = {
+        idCultivo: values.idCultivo,
         nombreCultivo: values.nombreCultivo,
         descripcion: values.descripcion,
 /*         apellidos: values.apellidos,
@@ -33,30 +39,84 @@ const CropsModal = ({ modal, setModal, modalType,updateUsers}) => {
         correo: values.correo,
         contrasena: values.contrasena, */
       };
-      try {
-        await fetch("http://localhost:8081/crops/add", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        })
-          .then((res) => { 
-            if (res.status === 200) {
+      console.log('e')
+      if(modalType === "create"){
+        await createCrop(data)
+          .then((res) => {
+            if (res.status === 201) {
               enqueueSnackbar('¡Bien hecho! Cultivo creado exitosamente', { variant:'success'});
-              updateUsers();
+              updateCrops();
               setModal(false);
             }else{
               enqueueSnackbar('¡Error! El cultivo no pudo ser creado', { variant:'error'});
             }
-            } 
-          )
-      } catch (error) {
-        enqueueSnackbar('¡Error! No se pudo crear el cultivo', { variant:'error'});
-      }
-      resetForm();
+            resetForm();
+          })
+          .catch((err) => {
+            enqueueSnackbar(err.response.data.message, {
+              variant: "error",
+            });
+          });
+      }else{
+        await updateCrop(crop.id,data)
+          .then((res) => {
+            enqueueSnackbar("Cultivo actualizado con éxito", {
+              variant: "success",
+            });
+            updateCrops();
+            resetForm();
+            setModal(false);
+          })
+          .catch((err) => {
+            enqueueSnackbar(err.response.data.message, {
+              variant: "error",
+            });
+          });
+      } 
     },
   });
+
+  //     try {
+  //       await fetch("http://localhost:8081/crops/add", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(data),
+  //       })
+  //         .then((res) => { 
+  //           if (res.status === 200) {
+  //             enqueueSnackbar('¡Bien hecho! Cultivo creado exitosamente', { variant:'success'});
+  //             updateUsers();
+  //             setModal(false);
+  //           }else{
+  //             enqueueSnackbar('¡Error! El cultivo no pudo ser creado', { variant:'error'});
+  //           }
+  //           } 
+  //         )
+  //     } catch (error) {
+  //       enqueueSnackbar('¡Error! No se pudo crear el cultivo', { variant:'error'});
+  //     }
+  //     resetForm();
+  //   },
+  // });
+
+  useEffect(() => {
+    if (modalType === "update") {
+      formik.setValues({
+        idCultivo: crop.idCultivo || "",
+        nombreCultivo: crop.nombreCultivo || "",
+        descripcion: crop.descripcion || "",
+        // identificacion:"123", 
+        // nombres: user.nombres || "",
+        // apellidos: user.apellidos || "",
+        // rol: user.rol || "",
+        // correo: user.correo || "" ,
+        // contrasena:'12345678',
+      });
+    }
+  }, [modalType, crop]);
+
 
   return (
     <MainModal
@@ -69,64 +129,31 @@ const CropsModal = ({ modal, setModal, modalType,updateUsers}) => {
       }
     >
       <form onSubmit={formik.handleSubmit}>
-{/*         {modalType === "create" ? (
-          <div className="form-group">
-            <label for="recipient-name" className="col-form-label">
-              No Identificación:
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="identificacion"
-              name="identificacion"
-              value={formik.values.identificacion}
-              onChange={formik.handleChange}
-            />
-          </div>
-        ) : null} */}
-
-{/*         <div className="form-group">
-          <label for="name" className="col-form-label">
-            Nombres:
+      <div className="form-group">
+          <label htmlFor="idCultivo" className="col-form-label">
+            Id Cultivo:
           </label>
           <input
             type="text"
             className="form-control"
-            id="nombres"
-            name="nombres"
-            value={formik.values.nombres}
+            id="idCultivo"
+            name="idCultivo"
+            value={formik.values.idCultivo}
             onChange={formik.handleChange}
           />
         </div>
         <div className="form-group">
-          <label for="last-name" className="col-form-label">
-            Apellidos:
+        <label htmlFor="idCultivo" className="col-form-label">
+            Nombre Cultivo:
           </label>
           <input
             type="text"
-            className="form-control"
-            id="apellidos"
-            name="apellidos"
-            value={formik.values.apellidos}
-            onChange={formik.handleChange}
-          />
-        </div> */}
-        <div className="form-group">
-          <label for="nombreCultivo" className="col-form-label">
-            Nombre Cultivo:
-          </label>
-          <select
-            for="nombreCultivo"
             className="form-control"
             id="nombreCultivo"
             name="nombreCultivo"
             value={formik.values.nombreCultivo}
             onChange={formik.handleChange}
-          >
-            <option>Seleccione una opción</option>
-            <option value={"miniClavel"}>Mini Clavel</option>
-            <option value={"clavelStandar"}>Clavel Standar</option>
-          </select>
+          />
         </div>
         <div className="form-group">
           <label for="descripcion" className="col-form-label">
@@ -141,22 +168,6 @@ const CropsModal = ({ modal, setModal, modalType,updateUsers}) => {
             onChange={formik.handleChange}
           />
         </div>
-
-        {/* {modalType === "create" ? (
-          <div className="form-group">
-            <label for="password" className="col-form-label">
-              Contraseña:
-            </label>
-            <input
-              type="password"
-              className="form-control"
-              id="contrasena"
-              name="contrasena"
-              value={formik.values.contrasena}
-              onChange={formik.handleChange}
-            />
-          </div>
-        ) : null} */}
         <div className="mt-4">
         <Button className="me-3" variant="secondary" onClick={()=>setModal(false)}>
           Cerrar
@@ -167,5 +178,6 @@ const CropsModal = ({ modal, setModal, modalType,updateUsers}) => {
     </MainModal>
   );
 };
+
 
 export default CropsModal;

@@ -4,53 +4,77 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "react-bootstrap/Button";
 import { useSnackbar } from "notistack";
+import { useEffect } from "react";
+import { updateParameter,createParameter } from "../services/api";
 
-const ParameterModal = ({ modal, setModal, modalType,updateUsers}) => {
+const ParameterModal = ({ modal, setModal, modalType,updateParameters, parameter}) => {
   const { enqueueSnackbar } = useSnackbar();
   const formik = useFormik({
     initialValues: {
-      Cultivo: "",
+      idCultivo: "",
       valorSemilla: "",
-      valorMAgua: "",
-      valorKGFertilizante: "",
+      valorAgua: "",
+      valorFertilizante: "",
     },
     validationSchema: Yup.object({
-      Cultivo: Yup.string().required("El campo es requerido"),
+      idCultivo: Yup.string().required("El campo es requerido"),
       valorSemilla: Yup.string().required("El campo es requerido"),
-      valorMAgua: Yup.string().required("El campo es requerido"),
-      valorKGFertilizante: Yup.string().required("El campo es requerido"),
+      valorAgua: Yup.string().required("El campo es requerido"),
+      valorFertilizante: Yup.string().required("El campo es requerido"),
     }),
     onSubmit: async (values,{resetForm}) => {
       const data = {
-        Cultivo: values.Cultivo,
+        idCultivo: values.idCultivo,
         valorSemilla: values.valorSemilla,
-        valorMAgua: values.valorMAgua,
-        valorKGFertilizante: values.valorKGFertilizante,
+        valorAgua: values.valorAgua,
+        valorFertilizante: values.valorFertilizante,
       };
-      try {
-        await fetch("http://localhost:8081/parameters/add", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        })
-          .then((res) => { 
-            if (res.status === 200) {
-              enqueueSnackbar('¡Bien hecho! Parámetros creados exitosamente', { variant:'success'});
-              updateUsers();
+      console.log('e')
+      if(modalType === "create"){
+        await createParameter(data)
+          .then((res) => {
+            if (res.status === 201) {
+              enqueueSnackbar('¡Bien hecho! Parámetro creado exitosamente', { variant:'success'});
+              updateParameters();
               setModal(false);
             }else{
-              enqueueSnackbar('¡Error! Los parámetros no pudieron ser creados', { variant:'error'});
+              enqueueSnackbar('¡Error! El parámetro no pudo ser creado', { variant:'error'});
             }
-            } 
-          )
-      } catch (error) {
-        enqueueSnackbar('¡Error! No se pudo crear los parámetros', { variant:'error'});
-      }
-      resetForm();
+            resetForm();
+          })
+          .catch((err) => {
+            enqueueSnackbar(err.response.data.message, {
+              variant: "error",
+            });
+          });
+      }else{
+        await updateParameter(parameter.id,data)
+          .then((res) => {
+            enqueueSnackbar("Parámetro actualizado con éxito", {
+              variant: "success",
+            });
+            updateParameters();
+            resetForm();
+            setModal(false);
+          })
+          .catch((err) => {
+            enqueueSnackbar(err.response.data.message, {
+              variant: "error",
+            });
+          });
+      } 
     },
   });
+  useEffect(() => {
+    if (modalType === "update") {
+      formik.setValues({
+        idCultivo: parameter.idCultivo || "",
+        valorSemilla: parameter.valorSemilla || "",
+        valorAgua: parameter.valorAgua || "",
+        valorFertilizante: parameter.valorFertilizante || "",
+      });
+    }
+  }, [modalType, parameter]);
 
   return (
     <MainModal
@@ -65,15 +89,15 @@ const ParameterModal = ({ modal, setModal, modalType,updateUsers}) => {
       <form onSubmit={formik.handleSubmit}>
 
         <div className="form-group">
-          <label for="Cultivo" className="col-form-label">
+          <label for="idCultivo" className="col-form-label">
             Cultivo:
           </label>
           <select
-            for="Cultivo"
+            for="idCultivo"
             className="form-control"
-            id="Cultivo"
-            name="Cultivo"
-            value={formik.values.Cultivo}
+            id="idCultivo"
+            name="idCultivo"
+            value={formik.values.idCultivo}
             onChange={formik.handleChange}
           >
               {/* búsqueda en otra colección */}
@@ -81,6 +105,7 @@ const ParameterModal = ({ modal, setModal, modalType,updateUsers}) => {
             <option value={"miniClavel"}>Mini Clavel</option>
             <option value={"clavelStandar"}>Clavel Estándar</option>
           </select>
+          {console.log(formik.values)}
         </div>
         <div className="form-group">
           <label for="valorSemilla" className="col-form-label">
@@ -96,28 +121,28 @@ const ParameterModal = ({ modal, setModal, modalType,updateUsers}) => {
           />
         </div>
         <div className="form-group">
-          <label for="valorMAgua" className="col-form-label">
+          <label for="valorAgua" className="col-form-label">
             Valor m<sup>3</sup> de Agua:
           </label>
           <input
             type="text"
             className="form-control"
-            id="valorMAgua"
-            name="valorMAgua"
-            value={formik.values.valorMAgua}
+            id="valorAgua"
+            name="valorAgua"
+            value={formik.values.valorAgua}
             onChange={formik.handleChange}
           />
         </div>
         <div className="form-group">
-          <label for="valorKGFertilizante" className="col-form-label">
+          <label for="valorFertilizante" className="col-form-label">
             Valor Kg de Fertilizante:
           </label>
           <input
             type="text"
             className="form-control"
-            id="valorKGFertilizante"
-            name="valorKGFertilizante"
-            value={formik.values.valorKGFertilizante}
+            id="valorFertilizante"
+            name="valorFertilizante"
+            value={formik.values.valorFertilizante}
             onChange={formik.handleChange}
           />
         </div>

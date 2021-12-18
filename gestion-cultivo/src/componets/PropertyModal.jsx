@@ -4,16 +4,18 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "react-bootstrap/Button";
 import { useSnackbar } from "notistack";
+import { useEffect } from "react";
+import { updateProperty,createProperty } from "../services/api";
 
-const PropertyModal = ({ modal, setModal, modalType,updateUsers}) => {
+const PropertyModal = ({ modal, setModal, modalType,updatePropertys,property}) => {
   const { enqueueSnackbar } = useSnackbar();
   const formik = useFormik({
     initialValues: {
-      idPredio: "",
-      idPropietario: "",
-      cantidadHectareas: "",
-      ubicacion: "",
-      longitudLatitud: "",
+      idPredio: property?property.idPredio:"",
+      idPropietario: property?property.idPropietario:"",
+      cantidadHectareas: property?property.cantidadHectareas:"", 
+      ubicacion: property?property.ubicacion:"",
+      longitudLatitud: property?property.longitudLatitud:"", 
     },
     validationSchema: Yup.object({
       idPredio: Yup.string().required("El campo es requerido"),
@@ -31,30 +33,55 @@ const PropertyModal = ({ modal, setModal, modalType,updateUsers}) => {
           ubicacion: values.ubicacion,
           longitudLatitud: values.longitudLatitud,
       };
-      try {
-        await fetch("http://localhost:8081/crops/add", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        })
-          .then((res) => { 
-            if (res.status === 200) {
-              enqueueSnackbar('¡Bien hecho! Cultivo creado exitosamente', { variant:'success'});
-              updateUsers();
+      console.log('e')
+      if(modalType === "create"){
+        await createProperty(data)
+          .then((res) => {
+            if (res.status === 201) {
+              enqueueSnackbar('¡Bien hecho! Predio creado exitosamente', { variant:'success'});
+              updatePropertys();
               setModal(false);
             }else{
-              enqueueSnackbar('¡Error! El cultivo no pudo ser creado', { variant:'error'});
+              enqueueSnackbar('¡Error! El Predio no pudo ser creado', { variant:'error'});
             }
-            } 
-          )
-      } catch (error) {
-        enqueueSnackbar('¡Error! No se pudo crear el cultivo', { variant:'error'});
-      }
-      resetForm();
-    },
+            resetForm();
+          })
+          .catch((err) => {
+            enqueueSnackbar(err.response.data.message, {
+              variant: "error",
+            });
+          });
+      }else{
+        await updateProperty(property.id,data)
+          .then((res) => {
+            enqueueSnackbar("Usuario actualizado con éxito", {
+              variant: "success",
+            });
+            updatePropertys();
+            resetForm();
+            setModal(false);
+            console.log(modal)
+          })
+          .catch((err) => {
+            console.log(err)
+            enqueueSnackbar(err.response.data.message, {
+              variant: "error",
+            });
+          });
+      }   
+    }
   });
+  useEffect(() => {
+    if (modalType === "update") {
+      formik.setValues({
+        idPredio: property.idPredio,
+        idPropietario: property.idPropietario,
+        cantidadHectareas: property.cantidadHectareas,
+        ubicacion: property.ubicacion,
+        longitudLatitud: property.longitudLatitud,
+      });
+    }
+  }, [modalType, property]);
 
   return (
     <MainModal
@@ -62,8 +89,8 @@ const PropertyModal = ({ modal, setModal, modalType,updateUsers}) => {
       setShow={setModal}
       title={
         modalType === "create"
-          ? "Creación de Propiedad"
-          : "Actualización de Propiedad"
+          ? "Creación de Predio"
+          : "Actualización de Predio"
       }
     >
       <form onSubmit={formik.handleSubmit}>

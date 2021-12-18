@@ -7,7 +7,7 @@ const ParametroSchema = mongoose.Schema(
             NombreCultivo: { type: "string", required: true},
             Descripcion: { type: "string", required: true}
         }, */
-        NombreCultivo: { type: "string", required: true},
+        IdCultivo: { type: "string", required: true},
         ValorSemilla: { type: "number", required: true},
         ValorAgua: { type: "number", required: true},
         ValorFertilizante: { type: "number", required: true}

@@ -1,14 +1,25 @@
 import React from "react";
 import Sidebar from "../componets/Sidebar";
 import Header from "../componets/Header";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import MainContentHeader from "../componets/MainContentHeader";
 import CropsModal from "../componets/CropsModal";
 import CropsTable from "../componets/CropsTable";
+import { getCrops } from "../services/api";
 
 const CropsAdmin = () => {
     const [modal, setModal] = useState(false);
     const [modalUpdate, setModalUpdate] = useState(false);
+    const [crops,setCrops] = useState([]);
+      /* Función para obtener los usuarios */
+      const obtenerCultivo = async () => {
+        const response = await getCrops();
+        setCrops(response);
+    }
+    /* Cargar datos en tabla con hook useEffect */
+    useEffect(() => {
+        obtenerCultivo();
+    }, [])
   return (
     <div className="container-fluid">
       <div className="row">
@@ -27,13 +38,13 @@ const CropsAdmin = () => {
                  subTitle={"Listado de Cultivos"}
                  buttonTitle={"Registrar Cultivo"}
                  /> 
-                <CropsTable setModal={setModal} setModalUpdate={setModalUpdate}/>
+                <CropsTable setModal={setModal} setModalUpdate={setModalUpdate} crops={crops} obtenerCultivo={obtenerCultivo}/>
               </div>
             </div>
           </div>
         </main>
-        <CropsModal modal={modal} modalType={'create'} setModal={setModal}/> 
-        <CropsModal modal={modalUpdate} modalType={'update'} setModal={setModalUpdate}/> 
+        <CropsModal modal={modal} modalType={'create'} setModal={setModal} updateCrops={obtenerCultivo}/> 
+        {/* <CropsModal modal={modalUpdate} modalType={'update'} setModal={setModalUpdate}/>  */}
       </div>
     </div>
   );

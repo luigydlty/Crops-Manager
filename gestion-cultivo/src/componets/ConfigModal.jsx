@@ -4,33 +4,37 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "react-bootstrap/Button";
 import { useSnackbar } from "notistack";
+import { useEffect } from "react";
+import { updateConfig,createConfig,getCrops } from "../services/api";
 
-const ConfigModal = ({ modal, setModal, modalType,updateConfig}) => {
+const ConfigModal = ({ modal, setModal, modalType,config,updateConfigs}) => {
   const { enqueueSnackbar } = useSnackbar();
+  const [crops, setCrops] = React.useState([]);
+
   const formik = useFormik({
     initialValues: {
-        idPredio: "",
-        idCultivo: "",
-        tiempoEnCultivo: "",
-        areaCultivo: "" ,
-        cantidadSemillasHect: "",
-        cantidadAgua: "",
-        cantidadFertilizante: "",
-        tiempoEnRecoleccion: "",
-        kgProyectado: "",
-        tiempoMinimo: "",
-        fechaSiembra: "",
-        fechaCosecha: "",
+        idPredio: config?config.idPredio:"",
+        idCultivo: config?config.idCultivo:"",
+        tiempoCultivo: config?config.tiempoCultivo:"",
+        areaCultivo: config?config.areaCultivo:"" ,
+        cantidadSemillas: config?config.cantidadSemillas:"",
+        cantidadAgua: config?config.cantidadAgua:"",
+        cantidadFertilizante: config?config.cantidadFertilizante:"",
+        tiempoRecoleccion: config?config.tiempoRecoleccion:"",
+        kgProyectado: config?config.kgProyectado:"",
+        tiempoMinimo: config?config.tiempoMinimo:"",
+        fechaSiembra: config?config.fechaSiembra:"",
+        fechaCosecha: config?config.fechaCosecha:"",
     },
     validationSchema: Yup.object({
         idPredio: Yup.string().required("El campo es requerido"),
         idCultivo: Yup.string().required("El campo es requerido"),
-        tiempoEnCultivo: Yup.string().required("El campo es requerido"),
+        tiempoCultivo: Yup.string().required("El campo es requerido"),
         areaCultivo: Yup.string().required("El campo es requerido"),
-        cantidadSemillasHect: Yup.string().required("El campo es requerido"),
+        cantidadSemillas: Yup.string().required("El campo es requerido"),
         cantidadAgua: Yup.string().required("El campo es requerido"),
         cantidadFertilizante: Yup.string().required("El campo es requerido"),
-        tiempoEnRecoleccion: Yup.string().required("El campo es requerido"),
+        tiempoRecoleccion: Yup.string().required("El campo es requerido"),
         kgProyectado: Yup.string().required("El campo es requerido"),
         tiempoMinimo: Yup.string().required("El campo es requerido"),
         fechaSiembra: Yup.string().required("El campo es requerido"),
@@ -40,42 +44,89 @@ const ConfigModal = ({ modal, setModal, modalType,updateConfig}) => {
       const data = {
         idPredio: values.idPredio,
         idCultivo: values.idCultivo,
-        tiempoEnCultivo: values.tiempoEnCultivo,
+        tiempoCultivo: values.tiempoCultivo,
         areaCultivo: values.areaCultivo,
-        cantidadSemillasHect: values.cantidadSemillasHect,
+        cantidadSemillas: values.cantidadSemillas,
         cantidadAgua: values.cantidadAgua,
         cantidadFertilizante: values.cantidadFertilizante,
-        tiempoEnRecoleccion: values.tiempoEnRecoleccion,
+        tiempoRecoleccion: values.tiempoRecoleccion,
         kgProyectado: values.kgProyectado,
         tiempoMinimo: values.tiempoMinimo,
         fechaSiembra: values.fechaSiembra,
         fechaCosecha: values.fechaCosecha,
       };
-      try {
-        await fetch("http://localhost:8081/configs/add", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        })
-          .then((res) => { 
-            if (res.status === 200) {
+
+      if(modalType === "create"){
+        await createConfig(data)
+          .then((res) => {
+            if (res.status === 201) {
               enqueueSnackbar('¡Bien hecho! Configuración creada exitosamente', { variant:'success'});
-              updateConfig();
+              updateConfigs();
               setModal(false);
             }else{
               enqueueSnackbar('¡Error! La configuración no pudo ser creada', { variant:'error'});
             }
-            } 
-          )
-      } catch (error) {
-        enqueueSnackbar('¡Error! No se pudo crear la configuración', { variant:'error'});
-      }
-      resetForm();
+            resetForm();
+          })
+          .catch((err) => {
+            enqueueSnackbar(err.response.data.message, {
+              variant: "error",
+            });
+          });
+      }else{
+        await updateConfig(config.id,data)
+          .then((res) => {
+            enqueueSnackbar("Configuración actualizada con éxito", {
+              variant: "success",
+            });
+            updateConfigs();
+            resetForm();
+            setModal(false);
+          })
+          .catch((err) => {
+            enqueueSnackbar(err.response.data.message, {
+              variant: "error",
+            });
+          });
+      } 
     },
   });
 
+  const traerCultivo = async () => {
+    await getCrops()
+      .then((res) => {
+        setCrops(res);
+      })
+      .catch((err) => {
+        enqueueSnackbar(err.response.data.message, {
+          variant: "error",
+        });
+      });
+  };
+
+
+  useEffect(() => {
+    if (modalType === "update") {
+      formik.setValues({
+        idPredio: config.idPredio || "",
+        idCultivo: config.idCultivo || "",
+        tiempoCultivo: config.tiempoCultivo || "",
+        areaCultivo: config.areaCultivo || "",
+        cantidadSemillas: config.cantidadSemillas || "",
+        cantidadAgua: config.cantidadAgua || "",
+        cantidadFertilizante: config.cantidadFertilizante || "",
+        tiempoRecoleccion: config.tiempoRecoleccion || "",
+        kgProyectado: config.kgProyectado || "",
+        tiempoMinimo: config.tiempoMinimo || "",
+        fechaSiembra: config.fechaSiembra || "",
+        fechaCosecha: config.fechaCosecha || "",
+      });
+    }
+    traerCultivo();
+
+  }, [modalType, config]);
+
+  console.log(crops);
   return (
     <MainModal
       show={modal}
@@ -101,28 +152,35 @@ const ConfigModal = ({ modal, setModal, modalType,updateConfig}) => {
           />
         </div>
         <div className="form-group">
-          <label for="idCultivo" className="col-form-label">
-            ID Cultivo:
+          <label htmlFor="nombreCultivo" className="col-form-label">
+            Nombre Cultivo:
           </label>
-          <input
-            type="text"
+          <select
+            htmlFor="nombreCultivo"
             className="form-control"
             id="idCultivo"
             name="idCultivo"
             value={formik.values.idCultivo}
             onChange={formik.handleChange}
-          />
+          >
+              {/* búsqueda en otra colección */}
+              {crops.map((crop) => (
+                <option key={crop.IdCultivo} value={crop.IdCultivo}>
+                  {crop.NombreCultivo}
+                </option>
+              ))}
+          </select>
         </div>
         <div className="form-group">
-          <label for="tiempoEnCultivo" className="col-form-label">
+          <label for="tiempoCultivo" className="col-form-label">
             Tiempo del Cultivo (semana):
           </label>
           <input
             type="text"
             className="form-control"
-            id="tiempoEnCultivo"
-            name="tiempoEnCultivo"
-            value={formik.values.tiempoEnCultivo}
+            id="tiempoCultivo"
+            name="tiempoCultivo"
+            value={formik.values.tiempoCultivo}
             onChange={formik.handleChange}
           />
         </div>
@@ -140,15 +198,15 @@ const ConfigModal = ({ modal, setModal, modalType,updateConfig}) => {
           />
         </div>
         <div className="form-group">
-          <label for="cantidadSemillasHect" className="col-form-label">
+          <label for="cantidadSemillas" className="col-form-label">
             Cantidad de Semillas (hs):
           </label>
           <input
             type="text"
             className="form-control"
-            id="cantidadSemillasHect"
-            name="cantidadSemillasHect"
-            value={formik.values.cantidadSemillasHect}
+            id="cantidadSemillas"
+            name="cantidadSemillas"
+            value={formik.values.cantidadSemillas}
             onChange={formik.handleChange}
           />
         </div>
@@ -179,15 +237,15 @@ const ConfigModal = ({ modal, setModal, modalType,updateConfig}) => {
           />
         </div>
         <div className="form-group">
-          <label for="tiempoEnRecoleccion" className="col-form-label">
+          <label for="tiempoRecoleccion" className="col-form-label">
             Tiempo para realizar la recoleccion:
           </label>
           <input
             type="text"
             className="form-control"
-            id="tiempoEnRecoleccion"
-            name="tiempoEnRecoleccion"
-            value={formik.values.tiempoEnRecoleccion}
+            id="tiempoRecoleccion"
+            name="tiempoRecoleccion"
+            value={formik.values.tiempoRecoleccion}
             onChange={formik.handleChange}
           />
         </div>
@@ -218,15 +276,28 @@ const ConfigModal = ({ modal, setModal, modalType,updateConfig}) => {
           />
         </div>
         <div className="form-group">
-          <label for="fechaSiembra" className="col-form-label">
+          <label htmlFor="fechaSiembra" className="col-form-label">
             Fecha de la Siembra:
           </label>
           <input
-            type="text"
+            type="date"
             className="form-control"
             id="fechaSiembra"
             name="fechaSiembra"
             value={formik.values.fechaSiembra}
+            onChange={formik.handleChange}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="fechaCosecha" className="col-form-label">
+            Fecha de la Cosecha:
+          </label>
+          <input
+            type="date"
+            className="form-control"
+            id="fechaCosecha"
+            name="fechaCosecha"
+            value={formik.values.fechaCosecha}
             onChange={formik.handleChange}
           />
         </div>

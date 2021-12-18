@@ -1,77 +1,138 @@
 import React from "react";
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { deleteConfig } from "../services/api";
+import ConfigModal from "./ConfigModal";
+import { useState } from "react";
 
-const ConfigTable = ({setModal,setModalUpdate,setModalView}) => {
-    const MySwal = withReactContent(Swal)
-    function deleteRow(id) {MySwal.fire({
-        title: '¿Estas seguro?',
-        text: "No podras revertir esto!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#007965',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Si, eliminar!',
-        cancelButtonText: 'Cancelar'
-        
-    }).then((result) => {
-        if (result.value) {
-            Swal.fire(
-                'Eliminado!',
-                'Tu registro ha sido eliminado.',
-                'success'
-            )
-        }
-    })}
+const ConfigTable = ({ setModal, configs, obtenerConfiguracion }) => {
+  const [modalUpdate, setModalUpdate] = useState(false);
+  const [config, setConfig] = useState({});
+  const handleUpdate = (
+    idPredio,
+    idCultivo,
+    tiempoCultivo,
+    areaCultivo,
+    cantidadSemillas,
+    cantidadAgua,
+    cantidadFertilizante,
+    tiempoRecoleccion,
+    kgProyectado,
+    tiempoMinimo,
+    fechaSiembra,
+    fechaCosecha,
+    id
+  ) => {
+    setConfig({
+      idPredio,
+      idCultivo,
+      tiempoCultivo,
+      areaCultivo,
+      cantidadSemillas,
+      cantidadAgua,
+      cantidadFertilizante,
+      tiempoRecoleccion,
+      kgProyectado,
+      tiempoMinimo,
+      fechaSiembra,
+      fechaCosecha,
+      id,
+    });
+    setModalUpdate(true);
+  };
 
-return (
+  const MySwal = withReactContent(Swal);
+  function deleteRow(id) {
+    MySwal.fire({
+      title: "¿Estas seguro?",
+      text: "No podras revertir esto!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#007965",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, eliminar!",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.value) {
+        await deleteConfig(id);
+        obtenerConfiguracion();
+        Swal.fire("Eliminado!", "Tu registro ha sido eliminado.", "success");
+      }
+    });
+  }
+
+  return (
     <>
-    <table className="table table-hover mt-3 fs-6">
+      <table className="table table-hover mt-3 fs-6">
         <thead>
-        <tr>
+          <tr>
             <th scope="col">Id Predio</th>
             <th scope="col">Cultivo</th>
             <th scope="col">Área</th>
             <th scope="col">Semilla</th>
-            <th scope="col">Agua m<sup>3</sup></th>
+            <th scope="col">
+              Agua m<sup>3</sup>
+            </th>
             <th scope="col">Fertilizante</th>
             <th scope="col">Kg Proy</th>
             <th scope="col">Acciones</th>
-        </tr>
+          </tr>
         </thead>
         <tbody>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-            <button
-                type="button"
-                className="btn btn-success mx-auto"
-                onClick={()=>setModalView(true)} 
-            >
-                <i className="far fa-eye"></i>
-            </button>
-            <button
-                type="button"
-                className="btn btn-warning mx-auto"
-                onClick={()=>setModalUpdate(true)}
-            >
-                <i className="far fa-edit"></i>
-            </button>
-            <button type="button" className="btn btn-danger mx-auto" onClick={()=>deleteRow()}>
-                <i className="far fa-trash-alt"></i>
-            </button>
-            </td>
-        </tr>
+          {configs.length > 0 &&
+            configs.map((config) => (
+              <tr key={config._id}>
+                <td>{config.IdPredio}</td>
+                <td>{config.IdCultivo}</td>
+                <td>{config.AreaCultivo}</td>
+                <td>{config.CantidadAgua}</td>
+                <td>{config.CantidadFertilizante}</td>
+                <td>{config.KgProyectado}</td>
+                <td>
+                  <button
+                    type="button"
+                    className="btn btn-success mx-auto"
+                    // onClick={()=>setModalView(true)}
+                  >
+                    <i className="far fa-eye"></i>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-warning mx-auto"
+                    onClick={() =>
+                      handleUpdate(
+                        config.IdPredio,
+                        config.IdCultivo,
+                        config.TiempoCultivo,
+                        config.AreaCultivo,
+                        config.CantidadSemillas,
+                        config.CantidadAgua,
+                        config.CantidadFertilizante,
+                        config.TiempoRecoleccion,
+                        config.KgProyectado,
+                        config.TiempoMinimo,
+                        config.FechaSiembra,
+                        config.FechaCosecha,
+                        config._id
+                      )
+                    }
+                  >
+                    <i className="far fa-edit"></i>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-danger mx-auto"
+                    onClick={() => deleteRow(config._id)}
+                  >
+                    <i className="far fa-trash-alt"></i>
+                  </button>
+                </td>
+              </tr>
+            ))}
         </tbody>
-    </table>
+      </table>
     </>
-);
+  );
 };
 
 export default ConfigTable;
