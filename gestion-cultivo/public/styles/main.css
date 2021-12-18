@@ -1,0 +1,126 @@
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    }
+    body {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    }
+
+    .container, .row {
+    height: 100%;
+     
+    }
+     
+    /* Menú de navegación */
+    .navBar{
+        box-shadow: 0px 0px 10px #000;
+    }
+     
+    .navLink{
+        color: #FFEA64;
+        text-decoration: none;
+        padding: 3px;
+        display: block;
+        text-align: center;
+        font-size: 14px;
+        letter-spacing: 1px;
+    }
+     
+    .navLink:hover{
+        color: #fff;
+    }
+     
+    .active{
+        color: #FFF;
+        text-decoration: none;
+        text-align: center;
+        display: block;
+        font-size: 14px;
+        letter-spacing: 1px;
+        padding: 3px;
+    }
+     
+    .active:hover{
+        color: #FFF;
+    }
+     
+     
+    /* Sombra Header */
+    .header-content{
+        box-shadow: 0px 0px 10px #000;
+    }
+     
+    /* Icono cierre de sesión */
+    .icon-session{
+        color: #FFEA64;
+        text-decoration: none;
+        padding-right: 50px;
+        padding-left: 20px;;
+        font-size: 14px;
+        letter-spacing: 1px;
+        font-weight: bold;
+    }
+     
+    .icon-session:hover{
+        color: #fff;
+    }
+     
+    /* Botón y hover Amarillo */
+    .btn-orange{
+        background-color: #FFCC29;
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        padding: 5px;
+        border: none;
+        letter-spacing: 1px;
+        border-radius: 10px;
+    }
+    .btn-orange:hover{
+        background-color: #FFCC29;
+        box-shadow: 1px 1px 5px 5px #40C3AC;
+    }
+     
+    /* Fondo verde */
+    .bg-green {
+    background-color: #007965;
+    border-color:#007965 ;
+    }
+     
+     
+    /* Focus formulario login */
+    .login-focus input[type="email"]:focus,.login-focus input[type="password"]:focus{
+        border-color:#60CDBA;
+        outline-color: transparent;
+        box-shadow:0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19),0 0 0 4px #60CDBA;
+        background: #FFF2C7;
+    }
+     
+    /* Icono Ojo login */
+    .icon-eye{
+        position: absolute;
+        left: 520px;
+        cursor: pointer;
+        transition: 0.4s ease all;
+        color: #fff;
+     
+    }
+     
+    .icon-eye:hover{
+        color: #FFCC29;
+    }
+     
+    /* Tarjetas */
+    .card-home{
+        box-shadow: 0px 0px 10px #000;
+        color:#F58634;
+     
+    }
+    .card-home:hover{
+        transform: scale(1.04);
+    }
+     
