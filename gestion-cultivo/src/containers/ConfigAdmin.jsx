@@ -3,23 +3,41 @@ import Sidebar from "../componets/Sidebar";
 import Header from "../componets/Header";
 import { useState, useEffect } from "react";
 import MainContentHeader from "../componets/MainContentHeader";
+import { useSnackbar } from "notistack";
 import ConfigModal from "../componets/ConfigModal";
 import ConfigTable from "../componets/ConfigTable";
 import ViewModal from "../componets/ViewModal";
-import { getConfigs } from "../services/api";
+import { getConfigs,getCrops } from "../services/api";
 
 const ConfigAdmin = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const [modal, setModal] = useState(false);
   const [modalView, setModalView] = useState(false);
   const [modalUpdate, setModalUpdate] = useState(false);
   const [configs, setConfigs] = useState([]);
+  const [crops, setCrops] = React.useState([]);
   const obtenerConfiguracion = async () => {
     const response = await getConfigs();
     setConfigs(response);
+    
   };
+  const traerCultivo = async () => {
+    await getCrops()
+      .then((res) => {
+        setCrops(res);
+        console.log(res);
+      })
+      .catch((err) => {
+        enqueueSnackbar(err.response.data.message, {
+          variant: "error",
+        });
+      });
+  };
+
   /* Cargar datos en tabla con hook useEffect */
   useEffect(() => {
     obtenerConfiguracion();
+    traerCultivo();
   }, []);
   return (
     <div className="container-fluid">
@@ -43,7 +61,8 @@ const ConfigAdmin = () => {
                   setModal={setModal}
                   setModalUpdate={setModalUpdate}
                   configs={configs}
-                  obtenerConfiguracion={obtenerConfiguracion}
+                  obtenerConfiguracion={obtenerConfiguracion} 
+                  crops={crops}
                 />
               </div>
             </div>
@@ -59,6 +78,7 @@ const ConfigAdmin = () => {
           modalType={"create"}
           setModal={setModal}
           updateConfigs={obtenerConfiguracion}
+          crops={crops}
         />
         {/* <ConfigModal modal={modalUpdate} modalType={'update'} setModal={setModalUpdate}/>  */}
       </div>

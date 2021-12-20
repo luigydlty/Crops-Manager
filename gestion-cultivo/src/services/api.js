@@ -401,3 +401,20 @@ export const updateConfig = async (id, crop) => {
     throw new Error({ error });
   }
 }
+
+/* Calculos modal de configuraciones */
+export const calculateConfig = async (id) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/configs/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    });
+    return await response.json();
+  } catch (error) {
+    return console.log(error);
+  }
+};

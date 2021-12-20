@@ -4,6 +4,7 @@ require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const Config = require("../models/Config");
+const Parametro = require("../models/Parameter");
 const { body, validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 
@@ -53,7 +54,7 @@ router.post(
     .not()
     .isEmpty()
     .withMessage("El campo Fecha de Siembra es requerido"),
-    body("fechaCosecha")
+  body("fechaCosecha")
     .not()
     .isEmpty()
     .withMessage("El campo Fecha de Cosecha es requerido"),
@@ -179,6 +180,36 @@ router.patch("/:id", async (req, res) => {
     await config.save();
     console.log(config);
     res.json({ message: "Configuración actualizada" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+/* ruta para vista de datos de configuracion */
+router.get("/:id", async (req, res) => {
+  try {
+    const config = await Config.findById(req.params.id);
+    if (!config) {
+      return res.status(404).json({ message: "Configuración no encontrada" });
+    }
+    const params = await Parametro.findOne({
+      IdCultivo: config.IdCultivo,
+    }).exec();
+
+    if (!params) {
+      return res.status(404).json({ message: "Parametro no encontrado" });
+    }
+    const data = {
+      costosSemilla: params.ValorSemilla * config.CantidadSemillas,
+      costosAgua: params.ValorAgua * config.CantidadAgua,
+      costosFertilizante:
+        params.ValorFertilizante * config.CantidadFertilizante,
+      costoTotal:
+        params.ValorSemilla * config.CantidadSemillas +
+        params.ValorAgua * config.CantidadAgua +
+        params.ValorFertilizante * config.CantidadFertilizante,
+    };
+    res.json(data);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

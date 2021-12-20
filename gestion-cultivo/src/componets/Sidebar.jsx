@@ -104,18 +104,7 @@ const Sidebar = ({viewType}) => {
                             Configurar Cultivos
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="navLink" href="sowingManage.html">
-                            <i class="fas fa-tasks"></i>
-                            Programar Siembra
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="navLink" href="pickManage.html">
-                            <i class="fas fa-truck-monster"></i>
-                            Programar Cosecha
-                        </a>
-                    </li>
+
                 </>
                 )}
                 </ul>

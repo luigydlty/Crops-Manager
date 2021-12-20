@@ -115,7 +115,7 @@ const ParameterModal = ({ modal, setModal, modalType,updateParameters, parameter
           >
             <option value="">Seleccione un cultivo</option>
             {crops.map((crop) => (
-                <option key={crop.IdCultivo} value={crop.NombreCultivo}>
+                <option key={crop.IdCultivo} value={crop.IdCultivo}>
                   {crop.NombreCultivo}
                 </option>
             ))}

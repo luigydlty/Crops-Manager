@@ -6,10 +6,11 @@ import ConfigModal from "./ConfigModal";
 import ViewModal from "./ViewModal";
 import { useState } from "react";
 
-const ConfigTable = ({ setModal, configs, obtenerConfiguracion}) => {
+const ConfigTable = ({ setModal, configs, obtenerConfiguracion,crops}) => {
   const [modalUpdate, setModalUpdate] = useState(false);
   const [modalView, setModalView] = useState(false);
   const [config, setConfig] = useState({});
+  const [idConfig, setIdConfig] = useState(null);
   const handleUpdate = (
     idPredio,
     idCultivo,
@@ -63,6 +64,10 @@ const ConfigTable = ({ setModal, configs, obtenerConfiguracion}) => {
     });
   }
 
+  const obtenerNombreCultivo = (id) => {
+    const cultivo = crops.find((c) => c.IdCultivo === id);
+    return cultivo.NombreCultivo;
+  };
   return (
     <>
       <table className="table table-hover mt-3 fs-6">
@@ -81,11 +86,11 @@ const ConfigTable = ({ setModal, configs, obtenerConfiguracion}) => {
           </tr>
         </thead>
         <tbody>
-          {configs.length > 0 &&
+          {configs.length > 0 && crops.length > 0 &&
             configs.map((config) => (
               <tr key={config._id}>
                 <td>{config.IdPredio}</td>
-                <td>{config.IdCultivo}</td>
+                <td>{obtenerNombreCultivo(config.IdCultivo)}</td>
                 <td>{config.AreaCultivo}</td>
                 <td>{config.CantidadSemillas}</td> 
                 <td>{config.CantidadAgua}</td>
@@ -95,7 +100,7 @@ const ConfigTable = ({ setModal, configs, obtenerConfiguracion}) => {
                   <button
                     type="button"
                     className="btn btn-success mx-auto"
-                    // onClick={()=>setModalView(true)}
+                    onClick={()=>{setModalView(true);setIdConfig(config._id)}}
                   >
                     <i className="far fa-eye"></i>
                   </button>
@@ -140,11 +145,13 @@ const ConfigTable = ({ setModal, configs, obtenerConfiguracion}) => {
           setModal={setModalUpdate}
           updateConfigs={obtenerConfiguracion}
           config={config}
+          crops={crops}
         /> 
       <ViewModal
           modalView={modalView}
           modalType={"view"}
           setModalView={setModalView}
+          idConfig={idConfig}
         />
     </>
   );

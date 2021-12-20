@@ -7,9 +7,9 @@ import { useSnackbar } from "notistack";
 import { useEffect } from "react";
 import { updateConfig,createConfig,getCrops,getProperty} from "../services/api";
 
-const ConfigModal = ({ modal, setModal, modalType,config,updateConfigs}) => {
+const ConfigModal = ({ modal, setModal, modalType,config,updateConfigs,crops}) => {
   const { enqueueSnackbar } = useSnackbar();
-  const [crops, setCrops] = React.useState([]);
+  /* const [crops, setCrops] = React.useState([]); */
   const [properties, setProperties] = React.useState([]);
 
   const formik = useFormik({
@@ -107,7 +107,7 @@ const ConfigModal = ({ modal, setModal, modalType,config,updateConfigs}) => {
   };
 
   /* Traer datos de la colección de cultivos para uso en select */
-  const traerCultivo = async () => {
+/*   const traerCultivo = async () => {
     await getCrops()
       .then((res) => {
         setCrops(res);
@@ -117,7 +117,7 @@ const ConfigModal = ({ modal, setModal, modalType,config,updateConfigs}) => {
           variant: "error",
         });
       });
-  };
+  }; */
 
 
   useEffect(() => {
@@ -138,7 +138,7 @@ const ConfigModal = ({ modal, setModal, modalType,config,updateConfigs}) => {
       });
     }
     traerPredio();
-    traerCultivo();
+/*     traerCultivo(); */
 
   }, [modalType, config]);
 
