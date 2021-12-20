@@ -10,6 +10,7 @@ import PropertyAdmin from "./containers/PropertyAdmin";
 import CropsAdmin from "./containers/CropsAdmin";
 import ParametersAdmin from "./containers/ParametersAdmin";
 import ConfigAdmin from "./containers/ConfigAdmin";
+import ConfigManage from "./containers/ConfigManage";
 import { SnackbarProvider } from "notistack";
 import AppContextProvider from "./context/AppContext";
 import PrivateRoute from "./componets/PrivateRoute";
@@ -29,6 +30,7 @@ function App() {
             <Route path="/gestion-cultivos" element={<PrivateRoute><CropsAdmin /></PrivateRoute>} />
             <Route path="/parametros-cultivos" element={<PrivateRoute><ParametersAdmin /></PrivateRoute>} />
             <Route path="/configurar-cultivos" element={<PrivateRoute><ConfigAdmin /></PrivateRoute>} />
+            <Route path="/configurar-cultivos-manage" element={<PrivateRoute><ConfigManage /></PrivateRoute>} />
           </Routes>
         </Router>
       </SnackbarProvider>

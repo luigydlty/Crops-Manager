@@ -63,25 +63,25 @@ const Sidebar = ({viewType}) => {
                 {viewType === 'config' &&   
                 ( <>
                 <li class="nav-item">
-                        <a class="navLink" href="profileConfig.html">
+                        <a class="navLink" href="/userConfig">
                             <i class="fas fa-user-circle"></i> 
                             Mi perfil
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="navLink" href=" propertiesConfig.html">
+                        <a class="navLink" href="/gestion-predios">
                             <i class="fas fa-chart-area"></i>
                             Gestión Predios
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="navLink" href="cropsConfig.html">
+                        <a class="navLink" href="/gestion-cultivos">
                             <i class="fas fa-seedling"></i>
                             Gestión Cultivos
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="navLink" href="parametersConfig.html">
+                        <a class="navLink" href="/parametros-cultivos">
                             <i class="fas fa-tasks"></i>
                             Parametros Cultivos
                         </a>
@@ -93,27 +93,15 @@ const Sidebar = ({viewType}) => {
                 {viewType === 'manage' &&
                 ( <>
                 <li class="nav-item">
-                        <a class="navLink" href="profileManage.html">
+                        <a class="navLink" href="/homeManage">
                             <i class="fas fa-user-circle"></i> 
                             Mi perfil
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="navLink" href="configManage.html">
+                        <a class="navLink" href="/configurar-cultivos-manage">
                             <i class="fab fa-pagelines"></i>
                             Configurar Cultivos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="navLink" href="sowingManage.html">
-                            <i class="fas fa-tasks"></i>
-                            Programar Siembra
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="navLink" href="pickManage.html">
-                            <i class="fas fa-truck-monster"></i>
-                            Programar Cosecha
                         </a>
                     </li>
                 </>

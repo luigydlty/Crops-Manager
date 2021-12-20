@@ -2,13 +2,11 @@ import React from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { deleteConfig } from "../services/api";
-import ConfigModal from "./ConfigModal";
-import ViewModal from "./ViewModal";
+import ConfigModalManage from "./ConfigModalManage";
 import { useState } from "react";
 
-const ConfigTable = ({ setModal, configs, obtenerConfiguracion }) => {
+const ConfigTableManage = ({ setModal, configs, obtenerConfiguracion }) => {
   const [modalUpdate, setModalUpdate] = useState(false);
-  const [modalView, setModalView] = useState(false);
   const [config, setConfig] = useState({});
   const handleUpdate = (
     idPredio,
@@ -95,7 +93,7 @@ const ConfigTable = ({ setModal, configs, obtenerConfiguracion }) => {
                   <button
                     type="button"
                     className="btn btn-success mx-auto"
-                    onClick={()=>setModalView(true)}
+                    // onClick={()=>setModalView(true)}
                   >
                     <i className="far fa-eye"></i>
                   </button>
@@ -134,22 +132,15 @@ const ConfigTable = ({ setModal, configs, obtenerConfiguracion }) => {
             ))}
         </tbody>
       </table>
-      <ConfigModal
+      <ConfigModalManage
           modal={modalUpdate}
           modalType={"update"}
           setModal={setModalUpdate}
-          updateConfigs={obtenerConfiguracion}
-          config={config}
-        /> 
-        <ViewModal
-          modal={modalUpdate}
-          modalType={"update"}
-          setModal={setModalView}
-          updateConfigs={obtenerConfiguracion}
+          updateConfig={obtenerConfiguracion}
           config={config}
         /> 
     </>
   );
 };
 
-export default ConfigTable;
+export default ConfigTableManage;

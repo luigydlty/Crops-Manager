@@ -5,10 +5,11 @@ import * as Yup from "yup";
 import Button from "react-bootstrap/Button";
 import { useSnackbar } from "notistack";
 import { useEffect } from "react";
-import { updateProperty,createProperty } from "../services/api";
+import { updateProperty,createProperty,getUsers } from "../services/api";
 
 const PropertyModal = ({ modal, setModal, modalType,updatePropertys,property}) => {
   const { enqueueSnackbar } = useSnackbar();
+  const [users, setUsers] = React.useState([]);
   const formik = useFormik({
     initialValues: {
       idPredio: property?property.idPredio:"",
@@ -71,6 +72,17 @@ const PropertyModal = ({ modal, setModal, modalType,updatePropertys,property}) =
       }   
     }
   });
+  const traerUsuario = async () => {
+    await getUsers()
+      .then((res) => {
+        setUsers(res);
+      })
+      .catch((err) => {
+        enqueueSnackbar(err.response.data.message, {
+          variant: "error",
+        });
+      });
+  };
   useEffect(() => {
     if (modalType === "update") {
       formik.setValues({
@@ -81,6 +93,7 @@ const PropertyModal = ({ modal, setModal, modalType,updatePropertys,property}) =
         longitudLatitud: property.longitudLatitud,
       });
     }
+    traerUsuario();
   }, [modalType, property]);
 
   return (
@@ -111,14 +124,20 @@ const PropertyModal = ({ modal, setModal, modalType,updatePropertys,property}) =
           <label for="idPropietario" className="col-form-label">
             Id Propietario:
           </label>
-          <input
-            type="text"
+          <select
+            for="idPropietario"
             className="form-control"
             id="idPropietario"
             name="idPropietario"
             value={formik.values.idPropietario}
             onChange={formik.handleChange}
-          />
+          >
+          {users.map((user) => (
+                <option key={user.Identificacion} value={user.Identificacion}>
+                  {user.Identificacion}
+                </option>
+            ))}
+          </select>
         </div>
         <div className="form-group">
           <label for="cantidadHectareas" className="col-form-label">
