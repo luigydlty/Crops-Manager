@@ -37,7 +37,7 @@ const ConfigAdmin = () => {
                   setModal={setModal}
                   title={"Configuración de Cultivos"}
                   subTitle={"Listado de Configuraciones"}
-                  buttonTitle={"Configurar Cultivo"}
+                  buttonTitle={" Crear Configuración"}
                 />
                 <ConfigTable
                   setModal={setModal}

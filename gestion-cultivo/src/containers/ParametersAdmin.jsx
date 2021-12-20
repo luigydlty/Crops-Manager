@@ -37,7 +37,7 @@ const ParametersAdmin = () => {
                  setModal={setModal}
                  title={"Parametrizar Cultivo"}
                  subTitle={"Listado de Parametros"}
-                 buttonTitle={"Agregar Parametro"}
+                 buttonTitle={"Crear Parametro"}
                  /> 
                 <ParameterTable setModal={setModal} setModalUpdate={setModalUpdate} parameters={parameters}
                   obtenerParametro={obtenerParametro}/>

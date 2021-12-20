@@ -5,11 +5,12 @@ import * as Yup from "yup";
 import Button from "react-bootstrap/Button";
 import { useSnackbar } from "notistack";
 import { useEffect } from "react";
-import { updateConfig,createConfig,getCrops } from "../services/api";
+import { updateConfig,createConfig,getCrops,getProperty} from "../services/api";
 
 const ConfigModal = ({ modal, setModal, modalType,config,updateConfigs}) => {
   const { enqueueSnackbar } = useSnackbar();
   const [crops, setCrops] = React.useState([]);
+  const [properties, setProperties] = React.useState([]);
 
   const formik = useFormik({
     initialValues: {
@@ -92,6 +93,20 @@ const ConfigModal = ({ modal, setModal, modalType,config,updateConfigs}) => {
     },
   });
 
+  /* Traer datos de la colección de predios para uso en select */
+  const traerPredio = async () => {
+    await getProperty()
+      .then((res) => {
+        setProperties(res);
+      })
+      .catch((err) => {
+        enqueueSnackbar(err.response.data.message, {
+          variant: "error",
+        });
+      });
+  };
+
+  /* Traer datos de la colección de cultivos para uso en select */
   const traerCultivo = async () => {
     await getCrops()
       .then((res) => {
@@ -122,6 +137,7 @@ const ConfigModal = ({ modal, setModal, modalType,config,updateConfigs}) => {
         fechaCosecha: config.fechaCosecha || "",
       });
     }
+    traerPredio();
     traerCultivo();
 
   }, [modalType, config]);
@@ -133,23 +149,32 @@ const ConfigModal = ({ modal, setModal, modalType,config,updateConfigs}) => {
       setShow={setModal}
       title={
         modalType === "create"
-          ? "Creación de configuración"
-          : "Actualización de configuración"
+          ? "Crear Configuración"
+          : "Actualizar Configuración"
       }
     >
       <form onSubmit={formik.handleSubmit}>
       <div className="form-group">
-          <label for="idPredio" className="col-form-label">
+          <label htmlFor="idPredio" className="col-form-label">
             ID Predio:
           </label>
-          <input
-            type="text"
+          <select
+            htmlFor="idPredio"
             className="form-control"
             id="idPredio"
             name="idPredio"
             value={formik.values.idPredio}
             onChange={formik.handleChange}
-          />
+          >
+            <option value="">Seleccione un predio</option>
+            {properties.map((property) => (
+              <option key={property.IdPredio} value={property.IdPredio}>
+                {property.IdPredio}
+              </option>
+            ))}
+
+          </select>
+
         </div>
         <div className="form-group">
           <label htmlFor="nombreCultivo" className="col-form-label">
@@ -164,6 +189,7 @@ const ConfigModal = ({ modal, setModal, modalType,config,updateConfigs}) => {
             onChange={formik.handleChange}
           >
               {/* búsqueda en otra colección */}
+            <option value="">Seleccione un cultivo</option>
               {crops.map((crop) => (
                 <option key={crop.IdCultivo} value={crop.IdCultivo}>
                   {crop.NombreCultivo}

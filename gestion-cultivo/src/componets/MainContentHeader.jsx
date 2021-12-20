@@ -5,7 +5,7 @@ const MainContentHeader = ({setModal,title,subTitle,buttonTitle}) => {
         <>
         <div className="row">
             <div className="mb-3 d-flex col-9">
-            <h3>{title}</h3>
+            <h2>{title}</h2>
             </div>
             <div className="d-grid gap-2 d-md-block col-3">
             <button
@@ -19,7 +19,7 @@ const MainContentHeader = ({setModal,title,subTitle,buttonTitle}) => {
             </button>
             </div>
         </div>
-        <h6>{subTitle}</h6>
+        <h5>{subTitle}</h5>
         <hr />
         </>
     )

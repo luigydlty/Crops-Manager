@@ -40,7 +40,7 @@ return (
     <table className="table table-hover mt-3">
         <thead>
         <tr>
-            <th scope="col">IdCultivo</th>
+            <th scope="col">Cultivo</th>
             <th scope="col">Valor Semilla</th>
             <th scope="col">Valor m<sup>3</sup> agua</th>
             <th scope="col">Valor kg fertilizante</th>

@@ -36,7 +36,7 @@ const CropsAdmin = () => {
                  setModal={setModal}
                  title={"Gestión de Cultivos"}
                  subTitle={"Listado de Cultivos"}
-                 buttonTitle={"Registrar Cultivo"}
+                 buttonTitle={"Crear Cultivo"}
                  /> 
                 <CropsTable setModal={setModal} setModalUpdate={setModalUpdate} crops={crops} obtenerCultivo={obtenerCultivo}/>
               </div>

@@ -5,10 +5,11 @@ import * as Yup from "yup";
 import Button from "react-bootstrap/Button";
 import { useSnackbar } from "notistack";
 import { useEffect } from "react";
-import { updateParameter,createParameter } from "../services/api";
+import { updateParameter,createParameter,getCrops } from "../services/api";
 
 const ParameterModal = ({ modal, setModal, modalType,updateParameters, parameter}) => {
   const { enqueueSnackbar } = useSnackbar();
+  const [crops, setCrops] = React.useState([]);
   const formik = useFormik({
     initialValues: {
       idCultivo: "",
@@ -65,6 +66,17 @@ const ParameterModal = ({ modal, setModal, modalType,updateParameters, parameter
       } 
     },
   });
+  const traerCultivo = async () => {
+    await getCrops()
+      .then((res) => {
+        setCrops(res);
+      })
+      .catch((err) => {
+        enqueueSnackbar(err.response.data.message, {
+          variant: "error",
+        });
+      });
+  };
   useEffect(() => {
     if (modalType === "update") {
       formik.setValues({
@@ -74,6 +86,7 @@ const ParameterModal = ({ modal, setModal, modalType,updateParameters, parameter
         valorFertilizante: parameter.valorFertilizante || "",
       });
     }
+    traerCultivo();
   }, [modalType, parameter]);
 
   return (
@@ -82,15 +95,15 @@ const ParameterModal = ({ modal, setModal, modalType,updateParameters, parameter
       setShow={setModal}
       title={
         modalType === "create"
-          ? "Creación de Parámetros"
-          : "Actualización de Parámetros"
+          ? "Creación de Parámetro"
+          : "Actualización de Parámetro"
       }
     >
       <form onSubmit={formik.handleSubmit}>
 
-        <div className="form-group">
+      <div className="form-group">
           <label for="idCultivo" className="col-form-label">
-            Cultivo:
+            Nombre Cultivo:
           </label>
           <select
             for="idCultivo"
@@ -100,12 +113,13 @@ const ParameterModal = ({ modal, setModal, modalType,updateParameters, parameter
             value={formik.values.idCultivo}
             onChange={formik.handleChange}
           >
-              {/* búsqueda en otra colección */}
-            <option>Seleccione una opción</option>
-            <option value={"miniClavel"}>Mini Clavel</option>
-            <option value={"clavelStandar"}>Clavel Estándar</option>
+            <option value="">Seleccione un cultivo</option>
+            {crops.map((crop) => (
+                <option key={crop.IdCultivo} value={crop.NombreCultivo}>
+                  {crop.NombreCultivo}
+                </option>
+            ))}
           </select>
-          {console.log(formik.values)}
         </div>
         <div className="form-group">
           <label for="valorSemilla" className="col-form-label">

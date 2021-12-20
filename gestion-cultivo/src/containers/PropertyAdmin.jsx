@@ -37,7 +37,7 @@ const PropertyAdmin = () => {
                   setModal={setModal}
                   title={"Gestión de Predios"}
                   subTitle={"Listado de Predios"}
-                  buttonTitle={"Agregar Predio"}
+                  buttonTitle={"Crear Predio"}
                 />
                 <PropertyTable
                   setModal={setModal}

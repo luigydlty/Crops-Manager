@@ -3,10 +3,12 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { deleteConfig } from "../services/api";
 import ConfigModal from "./ConfigModal";
+import ViewModal from "./ViewModal";
 import { useState } from "react";
 
-const ConfigTable = ({ setModal, configs, obtenerConfiguracion }) => {
+const ConfigTable = ({ setModal, configs, obtenerConfiguracion}) => {
   const [modalUpdate, setModalUpdate] = useState(false);
+  const [modalView, setModalView] = useState(false);
   const [config, setConfig] = useState({});
   const handleUpdate = (
     idPredio,
@@ -68,13 +70,13 @@ const ConfigTable = ({ setModal, configs, obtenerConfiguracion }) => {
           <tr>
             <th scope="col">Id Predio</th>
             <th scope="col">Cultivo</th>
-            <th scope="col">Área</th>
-            <th scope="col">Semilla</th>
+            <th scope="col">Área-Cultivo</th>
+            <th scope="col">Cant_Semilla</th>
             <th scope="col">
-              Agua m<sup>3</sup>
+              Cant_Agua m<sup>3</sup>
             </th>
-            <th scope="col">Fertilizante</th>
-            <th scope="col">Kg Proy</th>
+            <th scope="col">Cant_Fertilizante</th>
+            <th scope="col">Kg Proyectados</th>
             <th scope="col">Acciones</th>
           </tr>
         </thead>
@@ -85,6 +87,7 @@ const ConfigTable = ({ setModal, configs, obtenerConfiguracion }) => {
                 <td>{config.IdPredio}</td>
                 <td>{config.IdCultivo}</td>
                 <td>{config.AreaCultivo}</td>
+                <td>{config.CantidadSemillas}</td> 
                 <td>{config.CantidadAgua}</td>
                 <td>{config.CantidadFertilizante}</td>
                 <td>{config.KgProyectado}</td>
@@ -131,6 +134,18 @@ const ConfigTable = ({ setModal, configs, obtenerConfiguracion }) => {
             ))}
         </tbody>
       </table>
+      <ConfigModal
+          modal={modalUpdate}
+          modalType={"update"}
+          setModal={setModalUpdate}
+          updateConfigs={obtenerConfiguracion}
+          config={config}
+        /> 
+      <ViewModal
+          modalView={modalView}
+          modalType={"view"}
+          setModalView={setModalView}
+        />
     </>
   );
 };
