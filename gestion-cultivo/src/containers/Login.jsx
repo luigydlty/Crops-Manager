@@ -32,6 +32,7 @@ const Login = () => {
         .then((res) => {
           localStorage.setItem("token", res.token);
           localStorage.setItem("correo", values.correo);
+          localStorage.setItem("rol", res.rol);
           setCorreo(values.correo);
           setUser(true);
           if (res.rol === "administrador") {

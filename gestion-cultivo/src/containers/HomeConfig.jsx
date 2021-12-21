@@ -10,7 +10,6 @@ const HomeConfig = (props) => {
                 <Header/>
                 <MainHome/>
                 <Sidebar viewType={'config'} />
-
             </div>
         </div>
     )

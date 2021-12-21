@@ -5,13 +5,18 @@ import { deleteParameter } from "../services/api";
 import ParameterModal from "./ParameterModal";
 import { useState } from "react";
 
-const ParameterTable = ({setModal,parameters,obtenerParametro}) => {
+const ParameterTable = ({setModal,parameters,obtenerParametro,crops}) => {
     const [modalUpdate, setModalUpdate] = useState(false);
     const [parameter,setParameter] = useState({})
     const handleUpdate = (idCultivo, valorSemilla, valorAgua, valorFertilizante,id) => {
         setParameter({idCultivo, valorSemilla, valorAgua, valorFertilizante,id})
         setModalUpdate(true)
     }
+    const obtenerNombreCultivo = (id) => {
+        const cultivo = crops.find((c) => c.IdCultivo === id);
+        return cultivo.NombreCultivo;
+      };
+
     const MySwal = withReactContent(Swal)
     function deleteRow(id) {MySwal.fire({
         title: '¿Estas seguro?',
@@ -34,6 +39,7 @@ const ParameterTable = ({setModal,parameters,obtenerParametro}) => {
             )
         }
     })}
+    
 
 return (
     <>
@@ -48,9 +54,9 @@ return (
         </tr>
         </thead>
         <tbody>
-        {parameters.length>0 && parameters.map(parameter => (
+        {crops.length >0 &&  parameters.length>0 && parameters.map(parameter => (
             <tr key ={parameter._id}>
-                <td>{parameter.IdCultivo}</td>
+                <td>{obtenerNombreCultivo(parameter.IdCultivo)}</td>
                 <td>{parameter.ValorSemilla}</td>
                 <td>{parameter.ValorAgua}</td>
                 <td>{parameter.ValorFertilizante}</td>

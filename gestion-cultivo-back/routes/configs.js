@@ -208,6 +208,8 @@ router.get("/:id", async (req, res) => {
         params.ValorSemilla * config.CantidadSemillas +
         params.ValorAgua * config.CantidadAgua +
         params.ValorFertilizante * config.CantidadFertilizante,
+        fechaSiembra: config.FechaSiembra,
+        fechaCosecha: config.FechaCosecha,
     };
     res.json(data);
   } catch (err) {

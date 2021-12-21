@@ -8,7 +8,7 @@ import ParameterModal from "../componets/ParameterModal";
 import ParameterTable from "../componets/ParameterTable";
 import { getParameters,getCrops} from "../services/api";
 
-const ParametersAdmin = () => {
+const ParametersConfig = () => {
     const [modal, setModal] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
     const [modalUpdate, setModalUpdate] = useState(false);
@@ -33,11 +33,6 @@ const ParametersAdmin = () => {
         });
       });
   };
-
-
-
-
-
 
   /* Cargar datos en tabla con hook useEffect */
   useEffect(() => {
@@ -74,4 +69,4 @@ const ParametersAdmin = () => {
   );
 };
 
-export default ParametersAdmin;
+export default ParametersConfig;

@@ -8,8 +8,8 @@ import { useState } from "react";
 const CropsTable = ({setModal,crops,obtenerCultivo}) => {
     const [modalUpdate, setModalUpdate] = useState(false);
     const [crop,setCrop] = useState({})
-    const handleUpdate = (nombreCultivo, descripcion ,id) => {
-        setCrop({nombreCultivo, descripcion, id})
+    const handleUpdate = (idCultivo,nombreCultivo, descripcion ,id) => {
+        setCrop({idCultivo,nombreCultivo, descripcion, id})
         setModalUpdate(true)
     }
     const MySwal = withReactContent(Swal)
@@ -40,6 +40,7 @@ return (
     <table className="table table-hover mt-3">
         <thead>
         <tr>
+            <th scope="col">Id Cultivo</th>
             <th scope="col">Nombre Cultivo</th>
             <th scope="col">Descripción Cultivo</th>
             <th scope="col">Acciones</th>
@@ -48,13 +49,14 @@ return (
         <tbody>
         {crops.length > 0 && crops.map(crop => (
             <tr key={crop._id}>
+                <td>{crop.IdCultivo}</td>
                 <td>{crop.NombreCultivo}</td>
                 <td>{crop.Descripcion}</td>
             <td>
             <button
                 type="button"
                 className="btn btn-warning mx-auto"
-                onClick={()=>handleUpdate(crop.NombreCultivo, crop.Descripcion, crop._id)}
+                onClick={()=>handleUpdate(crop.IdCultivo,crop.NombreCultivo, crop.Descripcion, crop._id)}
             >
                 <i className="far fa-edit"></i>
             </button>

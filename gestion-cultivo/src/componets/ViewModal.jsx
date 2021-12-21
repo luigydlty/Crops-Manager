@@ -44,11 +44,11 @@ const ViewModal = ({ modalView, setModalView,idConfig}) => {
       <table class="table table-hover">
         <tr class="font-weight-bold">
           <th scope="row">Fecha Siembra</th>
-          <td>01/01/2020</td>
+          <td>{calculos && calculos.fechaSiembra}</td>
         </tr>
         <tr>
           <th scope="row">Fecha Cosecha</th>
-          <td>01/01/2020</td>
+          <td>{calculos && calculos.fechaCosecha}</td>
         </tr>
       </table>
 

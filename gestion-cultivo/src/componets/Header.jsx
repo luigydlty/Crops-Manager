@@ -10,6 +10,7 @@ const Header = (props) => {
         e.preventDefault()
         localStorage.removeItem('token')
         localStorage.removeItem('correo')
+        localStorage.removeItem('rol')
         navigate('/')
     }
     const correoUser = localStorage.getItem('correo')
