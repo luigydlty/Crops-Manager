@@ -75,14 +75,14 @@ router.post(
         }
         bcrypt.compare(contrasena, user.Contrasena, (err, result) => {
           if (err) {
-            return res.status(401).json({ message: "Contraseña errada" });
+            return res.status(400).json({ message: "Contraseña errada" });//cambió de 401 a 400
           }
           if (result) {
             const token = jwt.sign(
               { userId: user.id },
               process.env.ACCESS_TOKEN_SECRET,
             );
-            return res.status(200).json({ token: token,rol:user.Rol });
+            return res.status(200).json({ token: token,rol:user.Rol,user:user }); //mostrar datos perfil
           }
           return res.status(401).json({ message: "Contraseña incorrecta" });
         });

@@ -2,7 +2,13 @@ import React from "react";
 import profile from "../assets/img/profile.png";
 
 function Profile() {
-  /* const [user, setUser] = React.useState({}); */
+  const [user, setUser] = React.useState({}); 
+  React.useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    setUser(user);
+  }, []);
+  
+
 
   return (
     <>
@@ -20,19 +26,19 @@ function Profile() {
         <table className="table table-hover">
           <tr className="font-weight-bold">
             <th scope="row">No Identificación</th>
-            <td>1000000000</td>
+            <td>{user.Identificacion}</td>
           </tr>
           <tr>
             <th scope="row">Nombres</th>
-            <td>Luigy</td>
+            <td>{user.Nombres}</td>
           </tr>
           <tr>
             <th scope="row">Apellidos</th>
-            <td>De La Torre</td>
+            <td>{user.Apellidos}</td>
           </tr>
           <tr>
             <th scope="row">Correo Electrónico</th>
-            <td>luigyd@uninorte.edu.co</td>
+            <td>{user.Correo}</td>
           </tr>
         </table>
       </div>

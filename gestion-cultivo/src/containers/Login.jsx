@@ -11,6 +11,7 @@ const Login = () => {
   const navigate = useNavigate()
   const { setCorreo,setUser } = useContext(AppContext);
   const [showpass, setShowpass] = useState(false);
+  const [error, setError] = useState(''); //new line
   const handleShowpass = () => {
     setShowpass(!showpass);
   };
@@ -30,6 +31,10 @@ const Login = () => {
     onSubmit: async(values) => {
       await loginUser(values.correo, values.contrasena)
         .then((res) => {
+          if (res.message) {
+            setError(res.message);
+            console.log(error);
+          } 
           localStorage.setItem("token", res.token);
           localStorage.setItem("correo", values.correo);
           localStorage.setItem("rol", res.rol);
@@ -66,6 +71,9 @@ const Login = () => {
               />
             </div>
             <hr className="border border-white" />
+            <div className="bg-danger">
+              <p className="text-white text-center">{error}</p>
+            </div>
             <div className="card-body">
               <form className="login-focus" onSubmit={formik.handleSubmit}>
                 <div className="mb-3">

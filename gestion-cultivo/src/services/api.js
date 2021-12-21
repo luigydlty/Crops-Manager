@@ -17,6 +17,7 @@ export const getUsers = async () => {
   }
 };
 
+
 /* Iniciar sesion */
 export const loginUser = async (correo, contrasena) => {
   try {
@@ -30,7 +31,11 @@ export const loginUser = async (correo, contrasena) => {
         body: JSON.stringify({ correo, contrasena }),
       }
     );
-    return await response.json();
+    /* return await response.json(); */ //mostrar datos perfil OJO new line
+    const result = await response.json(); //new line
+    console.log(result);
+    localStorage.setItem('user', JSON.stringify(result.user)); //new line
+    return result; //new line
   } catch (error) {
     return console.log(error);
   }
